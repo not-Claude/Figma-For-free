@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova — Design Studio</title>
+<script src="https://unpkg.com/konva@9/konva.min.js"></script>
+<style>
+:root{
+  --bg:#f5f5f7; --ink:#1d1d1f; --sub:#6e6e73;
+  --blue:#0071e3; --blue-d:#0058b3;
+  --card:rgba(255,255,255,.55); --card-b:rgba(255,255,255,.7);
+  --panel:#f6f6f8; --panel-b:#e3e3e6; --accent:#7b5cff;
+}
+*{box-sizing:border-box; margin:0; padding:0}
+html,body{height:100%; overflow:hidden}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Helvetica,Arial,sans-serif;
+  color:var(--ink); background:var(--bg);
+}
+button{font-family:inherit; cursor:pointer; border:none}
+input{font-family:inherit}
+::selection{background:var(--blue); color:#fff}
+
+/* ---------- LANDING ---------- */
+#landing{height:100%; overflow-y:auto; overflow-x:hidden; scroll-behavior:smooth;
+  background:
+    radial-gradient(1200px 600px at 15% -10%, #eaf1ff 0%, transparent 60%),
+    radial-gradient(1000px 500px at 90% 0%, #f3ecff 0%, transparent 55%),
+    var(--bg);
+}
+.wrap{max-width:1100px; margin:0 auto; padding:0 32px}
+nav.top{position:sticky; top:0; z-index:5; display:flex; align-items:center; justify-content:space-between;
+  padding:18px 32px; backdrop-filter:blur(20px) saturate(180%); background:rgba(245,245,247,.7);
+  border-bottom:1px solid rgba(0,0,0,.06)}
+.logo{font-weight:700; font-size:19px; letter-spacing:-.02em}
+.logo b{color:var(--blue)}
+nav.top .navbtn{background:var(--ink); color:#fff; padding:9px 20px; border-radius:980px; font-size:14px; font-weight:600}
+
+.hero{padding:110px 32px 90px; text-align:center}
+.eyebrow{display:inline-block; font-size:13px; font-weight:600; color:var(--blue); letter-spacing:.02em;
+  background:rgba(0,113,227,.1); padding:6px 14px; border-radius:980px; margin-bottom:22px}
+.hero h1{font-size:clamp(40px,7vw,84px); font-weight:700; letter-spacing:-.03em; line-height:1.04;
+  background:linear-gradient(180deg,#1d1d1f 20%,#4b4b52 100%); -webkit-background-clip:text; background-clip:text; color:transparent}
+.hero p{max-width:560px; margin:22px auto 40px; font-size:20px; line-height:1.5; color:var(--sub)}
+.cta{background:linear-gradient(180deg,#0b84ff,var(--blue-d)); color:#fff; font-size:17px; font-weight:600;
+  padding:16px 38px; border-radius:980px; box-shadow:0 10px 30px -8px rgba(0,113,227,.55); transition:transform .15s ease, box-shadow .15s ease}
+.cta:hover{transform:translateY(-2px); box-shadow:0 14px 34px -6px rgba(0,113,227,.6)}
+.cta:active{transform:translateY(0)}
+
+.section-title{text-align:center; font-size:34px; font-weight:700; letter-spacing:-.02em; margin-bottom:44px}
+
+.bento{display:grid; grid-template-columns:repeat(4,1fr); gap:18px; padding:0 32px 100px}
+.card{background:var(--card); border:1px solid var(--card-b); backdrop-filter:blur(18px) saturate(160%);
+  border-radius:22px; padding:28px; box-shadow:0 8px 30px -12px rgba(0,0,0,.12); transition:transform .2s ease}
+.card:hover{transform:translateY(-4px)}
+.card .ic{width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+  font-size:22px; margin-bottom:18px; background:linear-gradient(135deg,var(--blue),var(--accent)); color:#fff}
+.card h3{font-size:17px; font-weight:600; margin-bottom:8px}
+.card p{font-size:14px; color:var(--sub); line-height:1.5}
+
+.testi{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; padding:0 32px 120px}
+.quote{background:rgba(255,255,255,.4); border:1px solid rgba(255,255,255,.6); backdrop-filter:blur(14px);
+  border-radius:20px; padding:26px; font-size:15px; line-height:1.6}
+.quote .stars{color:#ff9500; margin-bottom:12px; font-size:14px}
+.quote .who{margin-top:16px; font-size:13px; color:var(--sub); font-weight:600}
+
+@media(max-width:860px){.bento{grid-template-columns:repeat(2,1fr)} .testi{grid-template-columns:1fr}}
+
+/* ---------- DASHBOARD ---------- */
+#dashboard{display:none; height:100%; grid-template-columns:240px 1fr; background:#2c2c2c; color:#e6e6e6;
+  font-size:13px}
+#dashboard.active{display:grid}
+.dash-side{background:#242424; border-right:1px solid #1a1a1a; padding:16px 12px; display:flex; flex-direction:column; overflow-y:auto}
+.dash-user{display:flex; align-items:center; gap:9px; padding:6px 8px; margin-bottom:14px; border-radius:8px; cursor:default}
+.dash-avatar{width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg,#0071e3,#7b5cff);
+  display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff}
+.dash-user b{font-size:13px; font-weight:600}
+.dash-search{display:flex; align-items:center; gap:8px; background:#333; border-radius:7px; padding:8px 10px; margin-bottom:14px; color:#8a8a8a}
+.dash-search input{background:none; border:none; color:#e6e6e6; font-size:13px; width:100%; outline:none}
+.dash-nav-item{display:flex; align-items:center; gap:9px; padding:8px 10px; border-radius:7px; cursor:pointer; color:#c7c7c7}
+.dash-nav-item:hover{background:#333}
+.dash-nav-item.on{background:#3a3a3a; color:#fff}
+.dash-back{margin-left:auto; background:none; color:#8a8a8a; font-size:13px}
+.dash-back:hover{color:#fff}
+.dash-section-label{font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#7a7a7a; margin:16px 8px 6px}
+.dash-team{display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:7px; cursor:pointer; color:#c7c7c7}
+.dash-team:hover{background:#333}
+.dash-badge{margin-left:auto; font-size:10px; background:#3a3a3a; padding:2px 7px; border-radius:5px; color:#9a9a9a}
+.dash-upgrade{margin-top:auto; background:#333; border-radius:10px; padding:14px; text-align:left}
+.dash-upgrade p{font-size:12px; color:#b8b8b8; line-height:1.5; margin-bottom:10px}
+.dash-upgrade button{background:#0071e3; color:#fff; font-size:12px; font-weight:600; padding:8px 12px; border-radius:6px; width:100%}
+
+.dash-main{overflow-y:auto; padding:24px 36px}
+.dash-title{font-size:20px; font-weight:600; margin-bottom:20px}
+.dash-actions{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:28px}
+.dash-action{background:#333; border-radius:12px; padding:16px; display:flex; align-items:center; gap:12px;
+  transition:background .15s ease}
+.dash-action:hover{background:#3d3d3d}
+.dash-action .ic{width:38px; height:38px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:18px; flex:none}
+.dash-action .tx{text-align:left}
+.dash-action h4{font-size:13px; font-weight:600; margin-bottom:2px}
+.dash-action span{font-size:11.5px; color:#9a9a9a}
+
+.dash-tabs{display:flex; gap:18px; border-bottom:1px solid #3a3a3a; margin-bottom:20px}
+.dash-tab{padding:10px 2px; font-size:13px; color:#9a9a9a; border-bottom:2px solid transparent; cursor:default}
+.dash-tab.on{color:#fff; border-color:#0071e3; font-weight:600}
+
+.dash-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px}
+.dash-card{cursor:pointer}
+.dash-thumb{aspect-ratio:16/10.5; border-radius:9px; background:#3a3a3a; margin-bottom:9px; overflow:hidden;
+  position:relative; border:1px solid #3f3f3f; transition:border-color .15s ease, transform .15s ease}
+.dash-card:hover .dash-thumb{border-color:#0071e3; transform:translateY(-2px)}
+.dash-thumb.blank{background:#fff}
+.dash-thumb.grad1{background:linear-gradient(135deg,#1b1035,#0071e3)}
+.dash-thumb.grad2{background:linear-gradient(135deg,#0d1b2a,#1b2e4d)}
+.dash-thumb.grad3{background:linear-gradient(135deg,#241f13,#4a3b12)}
+.dash-thumb .dots{position:absolute; inset:0; opacity:.5;
+  background-image:radial-gradient(#5a5a5a 1px,transparent 1px); background-size:14px 14px}
+.dash-fname{font-size:12.5px; font-weight:500; color:#e6e6e6; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.dash-fmeta{font-size:11px; color:#8a8a8a; margin-top:2px}
+
+@media(max-width:900px){.dash-actions{grid-template-columns:repeat(2,1fr)} .dash-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- EDITOR ---------- */
+#editor{display:none; height:100%; grid-template-rows:52px 1fr; grid-template-columns:1fr; background:var(--panel)}
+#editor.active{display:grid}
+
+.topbar{grid-column:1/-1; display:flex; align-items:center; gap:10px; padding:0 14px;
+  background:#fff; border-bottom:1px solid var(--panel-b); z-index:3}
+.topbar .back{font-size:13px; font-weight:600; color:var(--sub); padding:7px 10px; border-radius:8px; background:transparent}
+.topbar .back:hover{background:var(--panel)}
+.tools{display:flex; gap:4px; margin-left:6px; background:var(--panel); padding:4px; border-radius:10px}
+.tool{width:32px; height:32px; border-radius:7px; background:transparent; font-size:15px; display:flex; align-items:center; justify-content:center; color:var(--ink)}
+.tool.active{background:#fff; box-shadow:0 1px 4px rgba(0,0,0,.15); color:var(--blue)}
+.tool:hover:not(.active){background:rgba(0,0,0,.05)}
+.zoomctl{display:flex; align-items:center; gap:6px; margin-left:auto; font-size:13px; color:var(--sub)}
+.zoomctl button{width:26px; height:26px; border-radius:6px; background:var(--panel); font-size:15px}
+.zoomctl button:hover{background:var(--panel-b)}
+.exportbtn{background:var(--ink); color:#fff; font-size:13px; font-weight:600; padding:8px 16px; border-radius:8px; margin-left:10px}
+.exportbtn:hover{background:#000}
+
+.mid{display:grid; grid-template-columns:220px 1fr 240px; min-height:0}
+.leftbar,.rightbar{background:#fff; border-right:1px solid var(--panel-b); overflow-y:auto; padding:12px}
+.rightbar{border-right:none; border-left:1px solid var(--panel-b)}
+.panel-h{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--sub); margin:6px 0 10px}
+.layer-item{display:flex; align-items:center; gap:8px; padding:8px 8px; border-radius:8px; font-size:13px; cursor:pointer}
+.layer-item:hover{background:var(--panel)}
+.layer-item.sel{background:rgba(0,113,227,.12); color:var(--blue-d); font-weight:600}
+.layer-item .dot{width:8px; height:8px; border-radius:3px}
+.empty-hint{font-size:12px; color:var(--sub); padding:8px; line-height:1.5}
+
+.center{position:relative; overflow:hidden; background:
+  linear-gradient(#e9e9ec 1px,transparent 1px),
+  linear-gradient(90deg,#e9e9ec 1px,transparent 1px);
+  background-size:24px 24px; background-color:#fbfbfc}
+#stageContainer{width:100%; height:100%}
+
+.field{margin-bottom:12px}
+.field label{display:block; font-size:11px; color:var(--sub); margin-bottom:5px; font-weight:600}
+.row2{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.field input[type=number]{width:100%; padding:7px 9px; border:1px solid var(--panel-b); border-radius:7px; font-size:13px}
+.field input[type=color]{width:100%; height:32px; border:1px solid var(--panel-b); border-radius:7px; padding:2px; background:#fff}
+.field input:focus{outline:2px solid var(--blue); outline-offset:1px}
+.hint{font-size:11px; color:var(--sub); line-height:1.6; margin-top:16px; padding-top:12px; border-top:1px solid var(--panel-b)}
+</style>
+</head>
+<body>
+
+<!-- ================= LANDING ================= -->
+<div id="landing">
+  <nav class="top">
+    <div class="logo">Nova<b>.</b></div>
+    <button class="navbtn" id="navStart">Открыть редактор</button>
+  </nav>
+
+  <section class="hero">
+    <span class="eyebrow">Представляем Nova Studio</span>
+    <h1>Дизайн.<br>Без границ холста.</h1>
+    <p>Бесконечный вектор-редактор прямо в браузере. Ноль установки. Максимум скорости.</p>
+    <button class="cta" id="ctaStart">Старт →</button>
+  </section>
+
+  <h2 class="section-title">Почему Nova</h2>
+  <div class="bento">
+    <div class="card"><div class="ic">✦</div><h3>Минимализм</h3><p>Интерфейс без лишнего. Инструменты появляются тогда, когда нужны.</p></div>
+    <div class="card"><div class="ic">⧉</div><h3>Бесконечный холст</h3><p>Пространство растёт вместе с вашей идеей — пан и зум без ограничений.</p></div>
+    <div class="card"><div class="ic">⌘</div><h3>Хоткеи как в проф. софте</h3><p>Copy/Paste, Undo, Delete — всё там, где ждут ваши пальцы.</p></div>
+    <div class="card"><div class="ic">◐</div><h3>Мгновенный экспорт</h3><p>PNG в один клик, в любом разрешении вашего холста.</p></div>
+  </div>
+
+  <h2 class="section-title">Что говорят дизайнеры</h2>
+  <div class="testi">
+    <div class="quote"><div class="stars">★★★★★</div>«Открывается за секунду, а ощущается как нативное приложение.»<div class="who">— Анна К., продуктовый дизайнер</div></div>
+    <div class="quote"><div class="stars">★★★★★</div>«Наконец редактор, где панель свойств не мешает думать.»<div class="who">— Дмитрий С., UI-инженер</div></div>
+    <div class="quote"><div class="stars">★★★★★</div>«Бесконечный канвас с плавным зумом — именно то, чего не хватало Figma-заменителям.»<div class="who">— Мила Р., арт-директор</div></div>
+  </div>
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+<div id="dashboard">
+  <div class="dash-side">
+    <div class="dash-user">
+      <div class="dash-avatar">N</div>
+      <b>Nova Studio</b>
+      <button class="dash-back" id="dashBack">← Лендинг</button>
+    </div>
+    <div class="dash-search">🔍 <input type="text" placeholder="Search for anything"></div>
+    <div class="dash-nav-item on">🕘 Recents</div>
+    <div class="dash-nav-item">📄 Drafts</div>
+    <div class="dash-nav-item">▦ All projects</div>
+    <div class="dash-section-label">Starred</div>
+    <div class="dash-team">📁 Team project</div>
+    <div class="dash-upgrade">
+      <p>Вы приближаетесь к лимиту бесплатных файлов. Обновите план, чтобы расти без ограничений.</p>
+      <button>View plans</button>
+    </div>
+  </div>
+
+  <div class="dash-main">
+    <div class="dash-title">Recents</div>
+    <div class="dash-actions">
+      <div class="dash-action" id="newDesignFile">
+        <div class="ic" style="background:#1e3a8a">✎</div>
+        <div class="tx"><h4>New design file</h4><span>Design and prototype</span></div>
+      </div>
+      <div class="dash-action">
+        <div class="ic" style="background:#5b21b6">✦</div>
+        <div class="tx"><h4>New FigJam board</h4><span>Whiteboard and diagram</span></div>
+      </div>
+      <div class="dash-action">
+        <div class="ic" style="background:#9a3412">▤</div>
+        <div class="tx"><h4>New slide deck</h4><span>Present and share</span></div>
+      </div>
+      <div class="dash-action">
+        <div class="ic" style="background:#3f3f3f">⇩</div>
+        <div class="tx"><h4>Import</h4><span>Bring in external files</span></div>
+      </div>
+    </div>
+
+    <div class="dash-tabs">
+      <div class="dash-tab on">Recently viewed</div>
+      <div class="dash-tab">Shared files</div>
+      <div class="dash-tab">Shared projects</div>
+    </div>
+
+    <div class="dash-grid" id="dashGrid"></div>
+  </div>
+</div>
+
+<!-- ================= EDITOR ================= -->
+<div id="editor">
+  <div class="topbar">
+    <button class="back" id="backBtn">← Лендинг</button>
+    <div class="tools">
+      <button class="tool active" data-tool="select" title="Выделение (V)">↖</button>
+      <button class="tool" data-tool="rect" title="Прямоугольник (R)">▭</button>
+      <button class="tool" data-tool="circle" title="Круг (O)">◯</button>
+      <button class="tool" data-tool="text" title="Текст (T)">T</button>
+    </div>
+    <div class="zoomctl">
+      <button id="zoomOut">−</button>
+      <span id="zoomLabel">100%</span>
+      <button id="zoomIn">+</button>
+    </div>
+    <button class="exportbtn" id="exportBtn">Export PNG</button>
+  </div>
+
+  <div class="mid">
+    <div class="leftbar">
+      <div class="panel-h">Слои</div>
+      <div id="layerList"><div class="empty-hint">Холст пуст. Выберите инструмент и кликните на холсте.</div></div>
+    </div>
+
+    <div class="center">
+      <div id="stageContainer"></div>
+    </div>
+
+    <div class="rightbar" id="propsPanel">
+      <div class="panel-h">Свойства</div>
+      <div class="empty-hint">Выберите объект, чтобы редактировать его параметры.</div>
+      <div class="hint">
+        Space+Drag — панорама<br>
+        Ctrl+Wheel — зум<br>
+        Delete — удалить<br>
+        Ctrl+C / Ctrl+V — копия<br>
+        Ctrl+Z — отменить
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ NAVIGATION ============ */
+const landing=document.getElementById('landing'), dashboard=document.getElementById('dashboard'), editor=document.getElementById('editor');
+
+function openDashboard(){
+  landing.style.display='none'; editor.classList.remove('active');
+  dashboard.classList.add('active');
+}
+function openLanding(){
+  dashboard.classList.remove('active'); editor.classList.remove('active');
+  landing.style.display='block';
+}
+function openEditor(){
+  dashboard.classList.remove('active'); editor.classList.add('active');
+  requestAnimationFrame(resizeStage);
+}
+
+document.getElementById('ctaStart').onclick=openDashboard;
+document.getElementById('navStart').onclick=openDashboard;
+document.getElementById('dashBack').onclick=openLanding;
+document.getElementById('newDesignFile').onclick=openEditor;
+document.getElementById('backBtn').onclick=openDashboard;
+
+/* ---- fake recent-files grid ---- */
+const dashFiles=[
+  {name:'Проект 1', meta:'Edited 12 minutes ago', thumb:'dots'},
+  {name:'Инфографика новая', meta:'Edited 1 month ago', thumb:'grad2'},
+  {name:'Untitled', meta:'Edited 1 day ago', thumb:'blank'},
+  {name:'Untitled', meta:'Edited 1 day ago', thumb:'dots'},
+  {name:'Apple Emoji Library', meta:'Edited 2 months ago', thumb:'grad1'},
+  {name:'Figma basics', meta:'Edited 12 days ago', thumb:'blank'},
+  {name:'Untitled', meta:'Edited 10 days ago', thumb:'dots'},
+  {name:'Untitled', meta:'Edited 3 days ago', thumb:'dots'},
+];
+const dashGrid=document.getElementById('dashGrid');
+dashFiles.forEach(f=>{
+  const el=document.createElement('div');
+  el.className='dash-card';
+  const thumbCls = f.thumb==='dots' ? '' : f.thumb;
+  el.innerHTML=`<div class="dash-thumb ${thumbCls}">${f.thumb==='dots'?'<div class="dots"></div>':''}</div>
+    <div class="dash-fname">${f.name}</div><div class="dash-fmeta">${f.meta}</div>`;
+  el.onclick=openEditor;
+  dashGrid.appendChild(el);
+});
+
+/* ============ EDITOR CORE (Konva) ============ */
+const container=document.getElementById('stageContainer');
+const stage=new Konva.Stage({container, width:container.clientWidth, height:container.clientHeight, draggable:false});
+const layer=new Konva.Layer(); stage.add(layer);
+const tr=new Konva.Transformer({rotateEnabled:false, borderStroke:'#0071e3', anchorStroke:'#0071e3', anchorFill:'#fff', anchorSize:8});
+layer.add(tr);
+
+let tool='select', selected=null, counters={rect:0,circle:0,text:0};
+let spaceDown=false, isPanning=false, panLast=null;
+let clipboard=null;
+
+function resizeStage(){stage.width(container.clientWidth); stage.height(container.clientHeight);}
+window.addEventListener('resize', resizeStage);
+
+/* ---- toolbar ---- */
+document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tool').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); tool=b.dataset.tool;
+  stage.container().style.cursor= tool==='select'?'default':'crosshair';
+});
+
+/* ---- shape factory ---- */
+function makeShape(type, x, y){
+  let node;
+  if(type==='rect'){
+    counters.rect++;
+    node=new Konva.Rect({x, y, width:140, height:90, fill:'#0071e3', stroke:'#0058b3', strokeWidth:0, cornerRadius:6, name:'Rectangle '+counters.rect, draggable:true});
+  } else if(type==='circle'){
+    counters.circle++;
+    node=new Konva.Circle({x, y, radius:60, fill:'#7b5cff', stroke:'#5a3fd6', strokeWidth:0, name:'Circle '+counters.circle, draggable:true});
+  } else if(type==='text'){
+    counters.text++;
+    node=new Konva.Text({x, y, text:'Текст', fontSize:24, fontFamily:'inherit', fill:'#1d1d1f', name:'Text '+counters.text, draggable:true});
+  }
+  node.shapeType=type;
+  node.on('click tap', e=>{e.cancelBubble=true; select(node);});
+  node.on('dragmove transform', ()=>{if(selected===node) syncProps();});
+  node.on('dblclick dbltap', ()=>{ if(type==='text'){ const t=prompt('Текст:', node.text()); if(t!==null){node.text(t); layer.batchDraw(); if(selected===node) syncProps();} }});
+  layer.add(node);
+  refreshLayers();
+  pushHistory();
+  return node;
+}
+
+/* ---- selection ---- */
+function select(node){
+  selected=node; tr.nodes(node?[node]:[]); layer.batchDraw();
+  refreshLayers(); syncProps();
+}
+stage.on('click tap', e=>{ if(e.target===stage) select(null); });
+
+/* ---- click-to-create / pan / draw handling ---- */
+stage.on('mousedown touchstart', e=>{
+  if(spaceDown){ isPanning=true; panLast=stage.getPointerPosition(); stage.container().style.cursor='grabbing'; return; }
+  if(tool!=='select' && e.target===stage){
+    const p=stage.getPointerPosition();
+    const real={x:(p.x-stage.x())/stage.scaleX(), y:(p.y-stage.y())/stage.scaleY()};
+    const node=makeShape(tool, real.x, real.y);
+    select(node);
+    document.querySelector('.tool[data-tool="select"]').click();
+  }
+});
+stage.on('mousemove touchmove', ()=>{
+  if(isPanning){
+    const p=stage.getPointerPosition();
+    stage.position({x:stage.x()+p.x-panLast.x, y:stage.y()+p.y-panLast.y});
+    panLast=p; stage.batchDraw();
+  }
+});
+window.addEventListener('mouseup', ()=>{ isPanning=false; stage.container().style.cursor= spaceDown?'grab':(tool==='select'?'default':'crosshair'); });
+
+/* ---- space to pan ---- */
+window.addEventListener('keydown', e=>{
+  if(e.code==='Space' && !spaceDown){ spaceDown=true; if(!isPanning) stage.container().style.cursor='grab'; }
+});
+window.addEventListener('keyup', e=>{
+  if(e.code==='Space'){ spaceDown=false; stage.container().style.cursor= tool==='select'?'default':'crosshair'; }
+});
+
+/* ---- zoom (ctrl+wheel) ---- */
+stage.on('wheel', e=>{
+  if(!e.evt.ctrlKey){ return; }
+  e.evt.preventDefault();
+  const scaleBy=1.06, old=stage.scaleX();
+  const p=stage.getPointerPosition();
+  const mp={x:(p.x-stage.x())/old, y:(p.y-stage.y())/old};
+  let ns=e.evt.deltaY<0? old*scaleBy : old/scaleBy;
+  ns=Math.max(0.1, Math.min(8, ns));
+  stage.scale({x:ns,y:ns});
+  stage.position({x:p.x-mp.x*ns, y:p.y-mp.y*ns});
+  stage.batchDraw();
+  document.getElementById('zoomLabel').textContent=Math.round(ns*100)+'%';
+});
+function zoomBtn(dir){
+  const old=stage.scaleX();
+  let ns=Math.max(0.1, Math.min(8, dir>0? old*1.2 : old/1.2));
+  const c={x:stage.width()/2, y:stage.height()/2};
+  const mp={x:(c.x-stage.x())/old, y:(c.y-stage.y())/old};
+  stage.scale({x:ns,y:ns});
+  stage.position({x:c.x-mp.x*ns, y:c.y-mp.y*ns});
+  stage.batchDraw();
+  document.getElementById('zoomLabel').textContent=Math.round(ns*100)+'%';
+}
+document.getElementById('zoomIn').onclick=()=>zoomBtn(1);
+document.getElementById('zoomOut').onclick=()=>zoomBtn(-1);
+
+/* ---- layers panel ---- */
+function refreshLayers(){
+  const list=document.getElementById('layerList');
+  const shapes=layer.getChildren(n=>n!==tr && n.shapeType);
+  if(!shapes.length){ list.innerHTML='<div class="empty-hint">Холст пуст. Выберите инструмент и кликните на холсте.</div>'; return; }
+  list.innerHTML='';
+  shapes.slice().reverse().forEach(node=>{
+    const el=document.createElement('div');
+    el.className='layer-item'+(node===selected?' sel':'');
+    const color = node.shapeType==='text' ? '#1d1d1f' : (node.fill?node.fill():'#999');
+    el.innerHTML=`<span class="dot" style="background:${color}"></span><span>${node.name()}</span>`;
+    el.onclick=()=>select(node);
+    list.appendChild(el);
+  });
+}
+
+/* ---- properties panel ---- */
+function syncProps(){
+  const panel=document.getElementById('propsPanel');
+  if(!selected){
+    panel.innerHTML=`<div class="panel-h">Свойства</div><div class="empty-hint">Выберите объект, чтобы редактировать его параметры.</div>
+    <div class="hint">Space+Drag — панорама<br>Ctrl+Wheel — зум<br>Delete — удалить<br>Ctrl+C / Ctrl+V — копия<br>Ctrl+Z — отменить</div>`;
+    return;
+  }
+  const isCircle=selected.shapeType==='circle';
+  const w = isCircle? selected.radius()*2*selected.scaleX() : selected.width()*selected.scaleX();
+  const h = isCircle? selected.radius()*2*selected.scaleY() : selected.height()*selected.scaleY();
+  const fill = selected.fill? selected.fill():'#000000';
+  const stroke = selected.stroke? (selected.stroke()||'#000000'):'#000000';
+  panel.innerHTML=`
+    <div class="panel-h">Свойства</div>
+    <div class="field"><label>Название</label><input id="pName" type="text" value="${selected.name()}"></div>
+    <div class="row2">
+      <div class="field"><label>X</label><input id="pX" type="number" value="${Math.round(selected.x())}"></div>
+      <div class="field"><label>Y</label><input id="pY" type="number" value="${Math.round(selected.y())}"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>W</label><input id="pW" type="number" value="${Math.round(w)}"></div>
+      <div class="field"><label>H</label><input id="pH" type="number" value="${Math.round(h)}"></div>
+    </div>
+    <div class="field"><label>Fill</label><input id="pFill" type="color" value="${toHex(fill)}"></div>
+    ${selected.shapeType!=='text'?`<div class="field"><label>Stroke</label><input id="pStroke" type="color" value="${toHex(stroke)}"></div>`:''}
+    <div class="hint">Space+Drag — панорама<br>Ctrl+Wheel — зум<br>Delete — удалить<br>Ctrl+C / Ctrl+V — копия<br>Ctrl+Z — отменить</div>
+  `;
+  document.getElementById('pName').oninput=e=>{selected.name(e.target.value); refreshLayers();};
+  document.getElementById('pX').oninput=e=>{selected.x(+e.target.value); layer.batchDraw();};
+  document.getElementById('pY').oninput=e=>{selected.y(+e.target.value); layer.batchDraw();};
+  document.getElementById('pW').oninput=e=>{
+    if(isCircle){ selected.radius(+e.target.value/2); } else { selected.width(+e.target.value); selected.scaleX(1); }
+    layer.batchDraw();
+  };
+  document.getElementById('pH').oninput=e=>{
+    if(isCircle){ selected.radius(+e.target.value/2); } else { selected.height(+e.target.value); selected.scaleY(1); }
+    layer.batchDraw();
+  };
+  document.getElementById('pFill').oninput=e=>{selected.fill(e.target.value); layer.batchDraw(); refreshLayers();};
+  const ps=document.getElementById('pStroke');
+  if(ps) ps.oninput=e=>{selected.stroke(e.target.value); selected.strokeWidth(2); layer.batchDraw();};
+}
+function toHex(c){
+  if(!c) return '#000000';
+  if(c[0]==='#') return c.length===7?c:'#000000';
+  const m=c.match(/\d+/g); if(!m) return '#000000';
+  return '#'+m.slice(0,3).map(n=>(+n).toString(16).padStart(2,'0')).join('');
+}
+
+/* ---- history (undo) ---- */
+let history=[], skip=false;
+function pushHistory(){
+  if(skip) return;
+  const json=layer.getChildren(n=>n!==tr && n.shapeType).map(n=>n.toObject());
+  history.push(JSON.stringify(json));
+  if(history.length>50) history.shift();
+}
+function undo(){
+  if(history.length<2) return;
+  history.pop();
+  const snap=JSON.parse(history[history.length-1]||'[]');
+  skip=true;
+  layer.getChildren(n=>n!==tr && n.shapeType).slice().forEach(n=>n.destroy());
+  select(null);
+  snap.forEach(obj=>{
+    let node;
+    if(obj.className==='Rect') node=new Konva.Rect(obj.attrs);
+    else if(obj.className==='Circle') node=new Konva.Circle(obj.attrs);
+    else node=new Konva.Text(obj.attrs);
+    node.shapeType = obj.className==='Rect'?'rect':obj.className==='Circle'?'circle':'text';
+    node.draggable(true);
+    node.on('click tap', e=>{e.cancelBubble=true; select(node);});
+    node.on('dragmove transform', ()=>{if(selected===node) syncProps();});
+    node.on('dblclick dbltap', ()=>{ if(node.shapeType==='text'){ const t=prompt('Текст:', node.text()); if(t!==null){node.text(t); layer.batchDraw(); if(selected===node) syncProps();} }});
+    layer.add(node);
+  });
+  tr.moveToTop(); layer.batchDraw();
+  refreshLayers();
+  skip=false;
+}
+pushHistory();
+
+/* ---- hotkeys ---- */
+window.addEventListener('keydown', e=>{
+  if(!editor.classList.contains('active')) return;
+  const tag=document.activeElement.tagName;
+  if(tag==='INPUT' || tag==='TEXTAREA') return;
+
+  if((e.key==='Delete'||e.key==='Backspace') && selected){
+    selected.destroy(); select(null); layer.batchDraw(); refreshLayers(); pushHistory();
+  }
+  if(e.ctrlKey && e.key==='c' && selected){
+    clipboard=selected.toObject();
+  }
+  if(e.ctrlKey && e.key==='v' && clipboard){
+    let node;
+    if(clipboard.className==='Rect') node=new Konva.Rect(clipboard.attrs);
+    else if(clipboard.className==='Circle') node=new Konva.Circle(clipboard.attrs);
+    else node=new Konva.Text(clipboard.attrs);
+    node.x(node.x()+24); node.y(node.y()+24);
+    node.shapeType = clipboard.className==='Rect'?'rect':clipboard.className==='Circle'?'circle':'text';
+    counters[node.shapeType]++; node.name(node.shapeType[0].toUpperCase()+node.shapeType.slice(1)+' '+counters[node.shapeType]);
+    node.draggable(true);
+    node.on('click tap', ev=>{ev.cancelBubble=true; select(node);});
+    node.on('dragmove transform', ()=>{if(selected===node) syncProps();});
+    node.on('dblclick dbltap', ()=>{ if(node.shapeType==='text'){ const t=prompt('Текст:', node.text()); if(t!==null){node.text(t); layer.batchDraw(); if(selected===node) syncProps();} }});
+    layer.add(node); select(node); refreshLayers(); pushHistory();
+  }
+  if(e.ctrlKey && e.key==='z'){ e.preventDefault(); undo(); }
+  if(e.key==='v') document.querySelector('.tool[data-tool="select"]').click();
+  if(e.key==='r') document.querySelector('.tool[data-tool="rect"]').click();
+  if(e.key==='o') document.querySelector('.tool[data-tool="circle"]').click();
+  if(e.key==='t') document.querySelector('.tool[data-tool="text"]').click();
+});
+
+/* push history after drag/transform end */
+stage.on('dragend', pushHistory);
+tr.on('transformend', pushHistory);
+
+/* ---- export PNG ---- */
+document.getElementById('exportBtn').onclick=()=>{
+  tr.nodes([]); layer.batchDraw();
+  const url=stage.toDataURL({pixelRatio:2});
+  if(selected){ tr.nodes([selected]); layer.batchDraw(); }
+  const a=document.createElement('a'); a.href=url; a.download='nova-export.png'; a.click();
+};
+</script>
+</body>
+</html>
