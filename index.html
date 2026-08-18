@@ -214,6 +214,25 @@ nav.top .navbtn{background:var(--ink); color:#fff; padding:9px 20px; border-radi
 .save-dot.saved{background:#4caf50}
 .save-dot.saving{background:#ff9500;animation:pulse .8s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* --- bg removal --- */
+.bgrem-btn{width:100%;padding:10px;border-radius:8px;font-size:12.5px;font-weight:600;
+  background:linear-gradient(135deg,#7b5cff,#0071e3);color:#fff;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s ease}
+.bgrem-btn:hover{opacity:.88}
+.bgrem-btn:disabled{opacity:.5;cursor:not-allowed}
+.bgrem-progress{height:3px;border-radius:2px;background:#333;margin-top:8px;overflow:hidden;display:none}
+.bgrem-progress-bar{height:100%;background:linear-gradient(90deg,#7b5cff,#0071e3);width:0%;transition:width .2s ease}
+.bgrem-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:999;display:none;
+  flex-direction:column;align-items:center;justify-content:center;gap:16px;color:#fff}
+.bgrem-overlay.show{display:flex}
+.bgrem-spinner{width:48px;height:48px;border:3px solid rgba(255,255,255,.15);border-top-color:#7b5cff;
+  border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bgrem-overlay-label{font-size:15px;font-weight:600;letter-spacing:.01em}
+.bgrem-overlay-sub{font-size:12px;color:rgba(255,255,255,.6)}
+.bgrem-overlay-bar{width:220px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden}
+.bgrem-overlay-fill{height:100%;background:linear-gradient(90deg,#7b5cff,#0071e3);width:0%;transition:width .3s ease}
 .dash-card{position:relative}
 .dash-del{position:absolute;top:7px;right:7px;width:22px;height:22px;border-radius:6px;
   background:rgba(20,20,20,.85);color:#e6e6e6;font-size:12px;display:none;align-items:center;
@@ -363,6 +382,14 @@ nav.top .navbtn{background:var(--ink); color:#fff; padding:9px 20px; border-radi
       </div>
     </div>
   </div>
+</div>
+
+<!-- BG removal overlay -->
+<div class="bgrem-overlay" id="bgremOverlay">
+  <div class="bgrem-spinner"></div>
+  <div class="bgrem-overlay-label" id="bgremLabel">Загрузка модели…</div>
+  <div class="bgrem-overlay-bar"><div class="bgrem-overlay-fill" id="bgremFill"></div></div>
+  <div class="bgrem-overlay-sub" id="bgremSub">Первый запуск может занять ~10 сек</div>
 </div>
 
 <script>
@@ -770,7 +797,7 @@ function refreshLayers(){
   shapes.slice().reverse().forEach(node=>{
     const el=document.createElement('div');
     el.className='layer-item'+(node===selected?' sel':'');
-    const icon = {text:'T', rect:'▭', circle:'◯', image:'🖼'}[node.shapeType]||'◈';
+    const icon = {text:'T', rect:'⬛', circle:'⚫', image:'🖨️'}[node.shapeType]||'◈';
     el.innerHTML=`<span class="lic">${icon}</span><span>${node.name()}</span>`;
     el.onclick=()=>select(node);
     list.appendChild(el);
@@ -843,8 +870,11 @@ function syncProps(){
       <textarea class="pp-textarea" id="pText">${selected.text()}</textarea>
     </div>`:''}
     ${isImg?`
-    <div class="pp-section" style="color:#8a8a8a;font-size:11px;line-height:1.6">
-      🖼 Изображение<br>${w}×${h}px
+    <div class="pp-section">
+      <div class="pp-label">Image</div>
+      <div style="font-size:11px;color:#8a8a8a;margin-bottom:10px">${w}×${h}px</div>
+      <button class="bgrem-btn" id="bgRemBtn">✂️ Убрать фон</button>
+      <div class="bgrem-progress" id="bgRemProgress"><div class="bgrem-progress-bar" id="bgRemBar"></div></div>
     </div>`:''}
   `;
 
@@ -869,12 +899,174 @@ function syncProps(){
   });
   bind('pStroke', e=>{selected.stroke(e.target.value); selected.strokeWidth(Math.max(1,selected.strokeWidth()||1)); layer.batchDraw();});
   bind('pText', e=>{selected.text(e.target.value); layer.batchDraw();});
+
+  const bgBtn = document.getElementById('bgRemBtn');
+  if(bgBtn){ const capturedNode=selected; bgBtn.onclick=()=>doRemoveBg(capturedNode); }
 }
-function toHex(c){
-  if(!c) return '#000000';
-  if(c[0]==='#') return c.length===7?c:'#000000';
-  const m=c.match(/\d+/g); if(!m) return '#000000';
-  return '#'+m.slice(0,3).map(n=>(+n).toString(16).padStart(2,'0')).join('');
+
+/* ============ BACKGROUND REMOVAL ============ */
+
+import { removeBackground } from '@imgly/background-removal';
+
+async function doRemoveBg(node) {
+  if (!node || node.shapeType !== 'image') return;
+
+  const overlay = document.getElementById('bgremOverlay');
+  const label = document.getElementById('bgremLabel');
+  const sub = document.getElementById('bgremSub');
+  const fill = document.getElementById('bgremFill');
+
+  if (!overlay || !label || !sub || !fill) {
+    console.error('Background removal UI elements not found');
+    return;
+  }
+
+  overlay.classList.add('show');
+  label.textContent = 'Загрузка модели…';
+  sub.textContent = 'Первый запуск может занять некоторое время.';
+  fill.style.width = '0%';
+
+  try {
+    /* Создаём canvas из исходного изображения */
+    const img = node._imgEl;
+
+    if (!img) {
+      throw new Error('Исходное изображение не найдено');
+    }
+
+    const width = img.naturalWidth || img.width;
+    const height = img.naturalHeight || img.height;
+
+    if (!width || !height) {
+      throw new Error('Не удалось определить размер изображения');
+    }
+
+    const tmp = document.createElement('canvas');
+    tmp.width = width;
+    tmp.height = height;
+
+    const ctx = tmp.getContext('2d');
+
+    if (!ctx) {
+      throw new Error('Не удалось создать Canvas 2D context');
+    }
+
+    ctx.drawImage(img, 0, 0, width, height);
+
+    /* Canvas → PNG Blob */
+    const inputBlob = await new Promise((resolve, reject) => {
+      tmp.toBlob(
+        blob => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('Не удалось создать PNG'));
+          }
+        },
+        'image/png'
+      );
+    });
+
+    label.textContent = 'Удаление фона…';
+    sub.textContent = 'Обработка изображения…';
+
+    /* Удаление фона */
+    const resultBlob = await removeBackground(inputBlob, {
+      progress: (key, current, total) => {
+        if (total > 0) {
+          const pct = Math.min(
+            100,
+            Math.round((current / total) * 100)
+          );
+
+          fill.style.width = pct + '%';
+
+          if (String(key).includes('fetch')) {
+            label.textContent = 'Загрузка модели…';
+          } else {
+            label.textContent = `Обработка… ${pct}%`;
+          }
+        }
+      }
+    });
+
+    /* Blob → Data URL */
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () =>
+        reject(new Error('Не удалось прочитать результат'));
+
+      reader.readAsDataURL(resultBlob);
+    });
+
+    /* Создаём новое изображение */
+    const newImg = new Image();
+
+    newImg.onload = () => {
+      node.image(newImg);
+      node._imgEl = newImg;
+
+      layer.batchDraw();
+
+      syncProps();
+      pushHistory();
+
+      fill.style.width = '100%';
+      label.textContent = 'Готово!';
+
+      setTimeout(() => {
+        overlay.classList.remove('show');
+      }, 300);
+    };
+
+    newImg.onerror = () => {
+      throw new Error('Не удалось загрузить обработанное изображение');
+    };
+
+    newImg.src = dataUrl;
+
+  } catch (err) {
+    console.error('BG removal error:', err);
+
+    label.textContent = '❌ Ошибка';
+    sub.textContent =
+      err?.message || 'Проверьте соединение и попробуйте снова';
+
+    fill.style.width = '0%';
+
+    setTimeout(() => {
+      overlay.classList.remove('show');
+    }, 2500);
+  }
+}
+
+
+/* ============ COLOR → HEX ============ */
+
+function toHex(c) {
+  if (!c) return '#000000';
+
+  if (c[0] === '#') {
+    return c.length === 7 ? c : '#000000';
+  }
+
+  const m = c.match(/\d+/g);
+
+  if (!m) return '#000000';
+
+  return (
+    '#' +
+    m
+      .slice(0, 3)
+      .map(n =>
+        Number(n)
+          .toString(16)
+          .padStart(2, '0')
+      )
+      .join('')
+  );
 }
 
 /* ---- history (undo) ---- */
