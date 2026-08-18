@@ -122,47 +122,105 @@ nav.top .navbtn{background:var(--ink); color:#fff; padding:9px 20px; border-radi
 
 @media(max-width:900px){.dash-actions{grid-template-columns:repeat(2,1fr)} .dash-grid{grid-template-columns:repeat(2,1fr)}}
 
-/* ---------- EDITOR ---------- */
-#editor{display:none; height:100%; grid-template-rows:52px 1fr; grid-template-columns:1fr; background:var(--panel)}
+/* ---------- EDITOR (Figma-style) ---------- */
+#editor{display:none; height:100%; grid-template-rows:40px 1fr; background:#2c2c2c}
 #editor.active{display:grid}
 
-.topbar{grid-column:1/-1; display:flex; align-items:center; gap:10px; padding:0 14px;
-  background:#fff; border-bottom:1px solid var(--panel-b); z-index:3}
-.topbar .back{font-size:13px; font-weight:600; color:var(--sub); padding:7px 10px; border-radius:8px; background:transparent}
-.topbar .back:hover{background:var(--panel)}
-.tools{display:flex; gap:4px; margin-left:6px; background:var(--panel); padding:4px; border-radius:10px}
-.tool{width:32px; height:32px; border-radius:7px; background:transparent; font-size:15px; display:flex; align-items:center; justify-content:center; color:var(--ink)}
-.tool.active{background:#fff; box-shadow:0 1px 4px rgba(0,0,0,.15); color:var(--blue)}
-.tool:hover:not(.active){background:rgba(0,0,0,.05)}
-.zoomctl{display:flex; align-items:center; gap:6px; margin-left:auto; font-size:13px; color:var(--sub)}
-.zoomctl button{width:26px; height:26px; border-radius:6px; background:var(--panel); font-size:15px}
-.zoomctl button:hover{background:var(--panel-b)}
-.exportbtn{background:var(--ink); color:#fff; font-size:13px; font-weight:600; padding:8px 16px; border-radius:8px; margin-left:10px}
-.exportbtn:hover{background:#000}
+.fig-tabbar{display:flex; align-items:center; padding:0 8px; gap:4px; background:#1f1f1f; border-bottom:1px solid #141414}
+.fig-tab{display:flex; align-items:center; gap:7px; background:#2c2c2c; height:30px; padding:0 10px; border-radius:6px 6px 0 0; font-size:12.5px; color:#e6e6e6}
+.fig-tab .ic{color:#7b5cff}
+.fig-tab .close{width:16px; height:16px; border-radius:4px; display:flex; align-items:center; justify-content:center; opacity:.6; font-size:13px}
+.fig-tab .close:hover{background:#3a3a3a; opacity:1}
+.fig-tabadd{width:26px; height:26px; border-radius:6px; color:#9a9a9a; font-size:16px; background:transparent}
+.fig-tabadd:hover{background:#2c2c2c}
+.fig-tabbar-back{margin-left:auto; font-size:12.5px; color:#9a9a9a; padding:6px 10px; border-radius:6px; background:transparent}
+.fig-tabbar-back:hover{background:#2c2c2c; color:#fff}
 
-.mid{display:grid; grid-template-columns:220px 1fr 240px; min-height:0}
-.leftbar,.rightbar{background:#fff; border-right:1px solid var(--panel-b); overflow-y:auto; padding:12px}
-.rightbar{border-right:none; border-left:1px solid var(--panel-b)}
-.panel-h{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--sub); margin:6px 0 10px}
-.layer-item{display:flex; align-items:center; gap:8px; padding:8px 8px; border-radius:8px; font-size:13px; cursor:pointer}
-.layer-item:hover{background:var(--panel)}
-.layer-item.sel{background:rgba(0,113,227,.12); color:var(--blue-d); font-weight:600}
-.layer-item .dot{width:8px; height:8px; border-radius:3px}
-.empty-hint{font-size:12px; color:var(--sub); padding:8px; line-height:1.5}
+.fig-body{display:grid; grid-template-columns:220px 1fr 250px; min-height:0}
 
-.center{position:relative; overflow:hidden; background:
-  linear-gradient(#e9e9ec 1px,transparent 1px),
-  linear-gradient(90deg,#e9e9ec 1px,transparent 1px);
-  background-size:24px 24px; background-color:#fbfbfc}
+.fig-left{background:#242424; border-right:1px solid #1a1a1a; display:flex; flex-direction:column; overflow:hidden}
+.fig-left-head{display:flex; align-items:center; gap:9px; padding:12px}
+.fig-logo2{width:20px; text-align:center; color:#7b5cff; font-size:16px}
+.fig-filename{font-size:12.5px; font-weight:600; color:#fff}
+.fig-filesub{font-size:10.5px; color:#8a8a8a}
+.fig-filesub b{color:#4caf50; font-weight:600}
+.fig-tabs2{display:flex; align-items:center; gap:14px; padding:0 12px 10px; font-size:12px; color:#8a8a8a; border-bottom:1px solid #1a1a1a}
+.fig-tabs2 span{cursor:default; padding-bottom:2px}
+.fig-tabs2 span.on{color:#fff; border-bottom:2px solid #0071e3}
+.fig-tabs2 .sp{margin-left:auto; opacity:.7}
+.fig-section{padding:10px 8px 4px}
+.fig-section-h{font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; color:#7a7a7a; padding:2px 6px 6px}
+.fig-page{padding:6px 10px; border-radius:6px; font-size:12.5px; color:#c7c7c7}
+.fig-page.on{background:#333; color:#fff}
+.fig-layers{flex:1; overflow-y:auto; padding:4px 8px 10px}
+
+.layer-item{display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:6px; font-size:12.5px; cursor:pointer; color:#c7c7c7}
+.layer-item:hover{background:#2e2e2e}
+.layer-item.sel{background:#0071e3; color:#fff}
+.layer-item .lic{width:14px; text-align:center; font-size:12px; opacity:.85}
+.empty-hint{font-size:11.5px; color:#7a7a7a; padding:8px; line-height:1.5}
+
+.fig-canvas-wrap{position:relative; overflow:hidden; background:
+  radial-gradient(#3a3a3a 1px,transparent 1px); background-size:22px 22px; background-color:#2c2c2c}
 #stageContainer{width:100%; height:100%}
 
-.field{margin-bottom:12px}
-.field label{display:block; font-size:11px; color:var(--sub); margin-bottom:5px; font-weight:600}
-.row2{display:grid; grid-template-columns:1fr 1fr; gap:8px}
-.field input[type=number]{width:100%; padding:7px 9px; border:1px solid var(--panel-b); border-radius:7px; font-size:13px}
-.field input[type=color]{width:100%; height:32px; border:1px solid var(--panel-b); border-radius:7px; padding:2px; background:#fff}
-.field input:focus{outline:2px solid var(--blue); outline-offset:1px}
-.hint{font-size:11px; color:var(--sub); line-height:1.6; margin-top:16px; padding-top:12px; border-top:1px solid var(--panel-b)}
+.fig-dock{position:absolute; left:50%; bottom:20px; transform:translateX(-50%); display:flex; gap:2px;
+  background:#242424; padding:5px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.45); border:1px solid #1a1a1a; z-index:4}
+.dock-btn{width:34px; height:34px; border-radius:8px; background:transparent; color:#c7c7c7; font-size:15px; display:flex; align-items:center; justify-content:center}
+.dock-btn:hover{background:#333}
+.dock-btn.active{background:#0071e3; color:#fff}
+
+.fig-hint-pill{position:absolute; left:50%; bottom:66px; transform:translateX(-50%); background:rgba(20,20,20,.92);
+  color:#fff; font-size:11.5px; font-weight:700; letter-spacing:.03em; padding:9px 18px; border-radius:980px; pointer-events:none;
+  opacity:0; transition:opacity .15s ease; z-index:4; white-space:nowrap}
+.fig-hint-pill.show{opacity:1}
+
+.fig-zoomlabel{position:absolute; left:14px; bottom:14px; background:#242424; color:#c7c7c7; font-size:11.5px;
+  padding:5px 8px; border-radius:8px; border:1px solid #1a1a1a; display:flex; align-items:center; gap:6px; z-index:4}
+.fig-zoomlabel button{width:18px; height:18px; border-radius:4px; background:transparent; color:#c7c7c7; font-size:13px}
+.fig-zoomlabel button:hover{background:#333}
+
+.fig-right{background:#242424; border-left:1px solid #1a1a1a; overflow-y:auto; font-size:12.5px; color:#e6e6e6}
+.fig-right-top{display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px solid #1a1a1a}
+.fig-avatar2{width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg,#0071e3,#7b5cff); font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; color:#fff; flex:none}
+.fig-dp-tabs{display:flex; gap:12px; font-size:12px; color:#8a8a8a}
+.fig-dp-tabs span.on{color:#fff; font-weight:600}
+.fig-zoom2{margin-left:auto; font-size:11.5px; color:#8a8a8a}
+
+.pp-section{padding:12px; border-bottom:1px solid #1a1a1a}
+.pp-h{font-size:12.5px; font-weight:600; color:#fff}
+.pp-label{font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; color:#8a8a8a; margin-bottom:8px}
+.pp-row{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.pp-field{position:relative}
+.pp-field .pl{position:absolute; left:8px; top:50%; transform:translateY(-50%); font-size:11px; color:#8a8a8a; pointer-events:none}
+.pp-field input[type=number]{width:100%; background:#333; border:1px solid transparent; color:#e6e6e6;
+  border-radius:6px; padding:7px 8px 7px 20px; font-size:12px}
+.pp-field input:focus{outline:none; border-color:#0071e3; background:#3a3a3a}
+.pp-fillrow{display:flex; align-items:center; gap:8px; background:#333; border-radius:6px; padding:5px 8px; margin-top:8px}
+.pp-fillrow input[type=color]{width:22px; height:22px; border-radius:5px; border:none; padding:0; background:none}
+.pp-fillrow span{font-size:12px; color:#c7c7c7; flex:1}
+.pp-textarea{width:100%; background:#333; border:1px solid transparent; color:#e6e6e6; border-radius:6px;
+  padding:8px; font-size:12.5px; margin-top:8px; min-height:64px; resize:vertical; font-family:inherit}
+.pp-textarea:focus{outline:none; border-color:#0071e3; background:#3a3a3a}
+.pp-empty{padding:16px 12px; font-size:12px; color:#8a8a8a; line-height:1.6}
+.pp-hint{padding:12px; font-size:11px; color:#7a7a7a; line-height:1.75}
+
+/* --- project/save UI --- */
+.fig-fname-edit{background:transparent;border:none;color:#fff;font-size:12.5px;font-weight:600;
+  max-width:160px;outline:none;border-bottom:1px solid transparent;cursor:text}
+.fig-fname-edit:focus{border-bottom-color:#0071e3}
+.save-pill{display:flex;align-items:center;gap:5px;margin-left:10px;font-size:11px;color:#7a7a7a;padding:0 6px}
+.save-dot{width:7px;height:7px;border-radius:50%;background:#555;flex:none;transition:background .3s}
+.save-dot.saved{background:#4caf50}
+.save-dot.saving{background:#ff9500;animation:pulse .8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.dash-card{position:relative}
+.dash-del{position:absolute;top:7px;right:7px;width:22px;height:22px;border-radius:6px;
+  background:rgba(20,20,20,.85);color:#e6e6e6;font-size:12px;display:none;align-items:center;
+  justify-content:center;z-index:3;border:none}
+.dash-card:hover .dash-del{display:flex}
+.dash-del:hover{background:#c0392b;color:#fff}
+.dash-empty{grid-column:1/-1;text-align:center;padding:60px 0;color:#7a7a7a;font-size:13px;line-height:2}
 </style>
 </head>
 <body>
@@ -250,90 +308,175 @@ nav.top .navbtn{background:var(--ink); color:#fff; padding:9px 20px; border-radi
 
 <!-- ================= EDITOR ================= -->
 <div id="editor">
-  <div class="topbar">
-    <button class="back" id="backBtn">← Лендинг</button>
-    <div class="tools">
-      <button class="tool active" data-tool="select" title="Выделение (V)">↖</button>
-      <button class="tool" data-tool="rect" title="Прямоугольник (R)">▭</button>
-      <button class="tool" data-tool="circle" title="Круг (O)">◯</button>
-      <button class="tool" data-tool="text" title="Текст (T)">T</button>
+  <div class="fig-tabbar">
+    <div class="fig-tab">
+      <span class="ic">◆</span>
+      <input id="tabFilename" class="fig-fname-edit" value="Без названия" title="Нажмите для переименования">
+      <span class="close" id="tabClose">×</span>
     </div>
-    <div class="zoomctl">
-      <button id="zoomOut">−</button>
-      <span id="zoomLabel">100%</span>
-      <button id="zoomIn">+</button>
-    </div>
-    <button class="exportbtn" id="exportBtn">Export PNG</button>
+    <div class="save-pill"><div class="save-dot" id="saveDot"></div><span id="saveLabel"></span></div>
+    <button class="fig-tabbar-back" id="backBtn">← Дашборд</button>
   </div>
 
-  <div class="mid">
-    <div class="leftbar">
-      <div class="panel-h">Слои</div>
-      <div id="layerList"><div class="empty-hint">Холст пуст. Выберите инструмент и кликните на холсте.</div></div>
+  <div class="fig-body">
+    <div class="fig-left">
+      <div class="fig-left-head">
+        <div class="fig-logo2">⬥</div>
+        <div>
+          <div class="fig-filename" id="sideFilename">Без названия</div>
+          <div class="fig-filesub">Drafts · <b>Free</b></div>
+        </div>
+      </div>
+      <div class="fig-tabs2"><span class="on">File</span><span>Assets</span><span class="sp">🔍</span></div>
+      <div class="fig-section">
+        <div class="fig-section-h">Pages</div>
+        <div class="fig-page on">Page 1</div>
+      </div>
+      <div class="fig-section-h" style="padding-left:14px">Layers</div>
+      <div class="fig-layers" id="layerList"><div class="empty-hint">Холст пуст. Выберите инструмент и кликните на холсте.</div></div>
     </div>
 
-    <div class="center">
+    <div class="fig-canvas-wrap">
       <div id="stageContainer"></div>
+      <div class="fig-hint-pill" id="hintPill">ПРОБЕЛ + ЛКМ — панорама</div>
+      <div class="fig-zoomlabel"><button id="zoomOut">−</button><span id="zoomLabel">100%</span><button id="zoomIn">+</button></div>
+      <div class="fig-dock">
+        <button class="dock-btn active" data-tool="select" title="Выделение (V)">↖</button>
+        <button class="dock-btn" data-tool="rect" title="Прямоугольник (R)">▭</button>
+        <button class="dock-btn" data-tool="circle" title="Круг (O)">◯</button>
+        <button class="dock-btn" data-tool="text" title="Текст (T)">T</button>
+        <button class="dock-btn" id="importBtn" title="Импорт изображения (I)">🖼</button>
+        <button class="dock-btn" id="exportBtn" title="Export PNG">⇩</button>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
     </div>
 
-    <div class="rightbar" id="propsPanel">
-      <div class="panel-h">Свойства</div>
-      <div class="empty-hint">Выберите объект, чтобы редактировать его параметры.</div>
-      <div class="hint">
-        Space+Drag — панорама<br>
-        Ctrl+Wheel — зум<br>
-        Delete — удалить<br>
-        Ctrl+C / Ctrl+V — копия<br>
-        Ctrl+Z — отменить
+    <div class="fig-right">
+      <div class="fig-right-top">
+        <div class="fig-avatar2">P</div>
+        <div class="fig-dp-tabs"><span class="on">Design</span><span>Prototype</span></div>
+        <div class="fig-zoom2" id="zoomLabel2">100%</div>
+      </div>
+      <div id="propsPanel">
+        <div class="pp-empty">Выберите объект, чтобы редактировать его параметры.</div>
+        <div class="pp-hint">Space+ЛКМ — панорама<br>Ctrl+колесо — зум<br>Delete — удалить<br>Ctrl+C / Ctrl+V — копия<br>Ctrl+Z — отменить<br>2×клик по тексту — редактировать</div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
+/* ============ PROJECT STORAGE ============ */
+const STORE_INDEX = 'nova_index';
+const STORE_PROJ  = id => 'nova_proj_' + id;
+
+function getIndex(){ try{ return JSON.parse(localStorage.getItem(STORE_INDEX)||'[]'); }catch{ return []; } }
+function setIndex(arr){ localStorage.setItem(STORE_INDEX, JSON.stringify(arr)); }
+
+function genId(){ return 'p' + Date.now() + Math.random().toString(36).slice(2,6); }
+
+function timeAgo(ts){
+  const s=Math.round((Date.now()-ts)/1000);
+  if(s<60) return 'Edited just now';
+  if(s<3600) return `Edited ${Math.round(s/60)} min ago`;
+  if(s<86400) return `Edited ${Math.round(s/3600)}h ago`;
+  return `Edited ${Math.round(s/86400)}d ago`;
+}
+
 /* ============ NAVIGATION ============ */
 const landing=document.getElementById('landing'), dashboard=document.getElementById('dashboard'), editor=document.getElementById('editor');
 
-function openDashboard(){
+let currentProjectId=null;
+
+function openDashboard(save=true){
+  if(save && currentProjectId) saveProject(false);
   landing.style.display='none'; editor.classList.remove('active');
   dashboard.classList.add('active');
+  renderDashboard();
 }
 function openLanding(){
+  if(currentProjectId) saveProject(false);
   dashboard.classList.remove('active'); editor.classList.remove('active');
   landing.style.display='block';
 }
-function openEditor(){
-  dashboard.classList.remove('active'); editor.classList.add('active');
+function openEditor(projectId){
+  dashboard.classList.remove('active');
+  currentProjectId = projectId;
+  loadProject(projectId);
+  editor.classList.add('active');
   requestAnimationFrame(resizeStage);
 }
+function newProject(){
+  const id = genId();
+  const name = 'Проект ' + (getIndex().length + 1);
+  const entry = {id, name, updatedAt: Date.now(), thumbnail:''};
+  const idx = getIndex(); idx.unshift(entry); setIndex(idx);
+  localStorage.setItem(STORE_PROJ(id), JSON.stringify({...entry, shapes:[]}));
+  openEditor(id);
+}
 
-document.getElementById('ctaStart').onclick=openDashboard;
-document.getElementById('navStart').onclick=openDashboard;
-document.getElementById('dashBack').onclick=openLanding;
-document.getElementById('newDesignFile').onclick=openEditor;
-document.getElementById('backBtn').onclick=openDashboard;
+document.getElementById('ctaStart').onclick = openDashboard.bind(null, false);
+document.getElementById('navStart').onclick = openDashboard.bind(null, false);
+document.getElementById('dashBack').onclick = openLanding;
+document.getElementById('newDesignFile').onclick = newProject;
+document.getElementById('backBtn').onclick = () => openDashboard(true);
+document.getElementById('tabClose').onclick = () => openDashboard(true);
 
-/* ---- fake recent-files grid ---- */
-const dashFiles=[
-  {name:'Проект 1', meta:'Edited 12 minutes ago', thumb:'dots'},
-  {name:'Инфографика новая', meta:'Edited 1 month ago', thumb:'grad2'},
-  {name:'Untitled', meta:'Edited 1 day ago', thumb:'blank'},
-  {name:'Untitled', meta:'Edited 1 day ago', thumb:'dots'},
-  {name:'Apple Emoji Library', meta:'Edited 2 months ago', thumb:'grad1'},
-  {name:'Figma basics', meta:'Edited 12 days ago', thumb:'blank'},
-  {name:'Untitled', meta:'Edited 10 days ago', thumb:'dots'},
-  {name:'Untitled', meta:'Edited 3 days ago', thumb:'dots'},
-];
-const dashGrid=document.getElementById('dashGrid');
-dashFiles.forEach(f=>{
-  const el=document.createElement('div');
-  el.className='dash-card';
-  const thumbCls = f.thumb==='dots' ? '' : f.thumb;
-  el.innerHTML=`<div class="dash-thumb ${thumbCls}">${f.thumb==='dots'?'<div class="dots"></div>':''}</div>
-    <div class="dash-fname">${f.name}</div><div class="dash-fmeta">${f.meta}</div>`;
-  el.onclick=openEditor;
-  dashGrid.appendChild(el);
+/* tab filename rename */
+const tabFn = document.getElementById('tabFilename');
+tabFn.addEventListener('input', ()=>{
+  const n = tabFn.value.trim()||'Без названия';
+  document.getElementById('sideFilename').textContent = n;
+  scheduleSave();
 });
+tabFn.addEventListener('keydown', e=>{ if(e.key==='Enter') tabFn.blur(); });
+
+/* ============ DASHBOARD RENDER ============ */
+const dashGrid = document.getElementById('dashGrid');
+
+function renderDashboard(){
+  const idx = getIndex();
+  dashGrid.innerHTML = '';
+  if(!idx.length){
+    dashGrid.innerHTML = '<div class="dash-empty">📄 Нет сохранённых проектов.<br>Нажмите «New design file», чтобы начать.</div>';
+    return;
+  }
+  idx.slice().sort((a,b)=>b.updatedAt-a.updatedAt).forEach(entry=>{
+    const card = document.createElement('div');
+    card.className = 'dash-card';
+
+    const thumb = document.createElement('div');
+    thumb.className = 'dash-thumb';
+    if(entry.thumbnail){
+      const img = document.createElement('img');
+      img.src = entry.thumbnail;
+      Object.assign(img.style,{width:'100%',height:'100%',objectFit:'cover',borderRadius:'8px'});
+      thumb.appendChild(img);
+    } else {
+      thumb.innerHTML = '<div class="dots"></div>';
+    }
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'dash-del'; delBtn.title = 'Удалить'; delBtn.textContent = '✕';
+    delBtn.onclick = e => {
+      e.stopPropagation();
+      if(!confirm(`Удалить «${entry.name}»?`)) return;
+      const arr = getIndex().filter(x=>x.id!==entry.id); setIndex(arr);
+      localStorage.removeItem(STORE_PROJ(entry.id));
+      renderDashboard();
+    };
+
+    const fname = document.createElement('div'); fname.className='dash-fname'; fname.textContent=entry.name;
+    const fmeta = document.createElement('div'); fmeta.className='dash-fmeta'; fmeta.textContent=timeAgo(entry.updatedAt);
+
+    card.appendChild(delBtn); card.appendChild(thumb);
+    card.appendChild(fname); card.appendChild(fmeta);
+    card.onclick = () => openEditor(entry.id);
+    dashGrid.appendChild(card);
+  });
+}
+
+renderDashboard(); // initial load
 
 /* ============ EDITOR CORE (Konva) ============ */
 const container=document.getElementById('stageContainer');
@@ -342,42 +485,219 @@ const layer=new Konva.Layer(); stage.add(layer);
 const tr=new Konva.Transformer({rotateEnabled:false, borderStroke:'#0071e3', anchorStroke:'#0071e3', anchorFill:'#fff', anchorSize:8});
 layer.add(tr);
 
-let tool='select', selected=null, counters={rect:0,circle:0,text:0};
+let tool='select', selected=null, counters={rect:0,circle:0,text:0,image:0};
 let spaceDown=false, isPanning=false, panLast=null;
 let clipboard=null;
+
+/* ============ SERIALIZE / SAVE / LOAD ============ */
+function serializeCanvas(){
+  return layer.getChildren(n=>n!==tr && n.shapeType).map(node=>{
+    if(node.shapeType==='image'){
+      const w=node.width()*node.scaleX(), h=node.height()*node.scaleY();
+      return {type:'image', attrs:{x:node.x(),y:node.y(),width:w,height:h,name:node.name(),opacity:node.opacity()??1}, src:node._imgEl?.src||''};
+    }
+    return {type:node.shapeType, attrs:node.toObject().attrs};
+  });
+}
+
+function attachNodeEvents(node){
+  node.draggable(true);
+  node.on('click tap', e=>{e.cancelBubble=true; select(node);});
+  node.on('dragmove transform', ()=>{if(selected===node) syncProps();});
+  if(node.shapeType==='text') node.on('dblclick dbltap', ()=>startTextEdit(node));
+}
+
+function restoreNode(s){
+  let node;
+  if(s.type==='rect') node=new Konva.Rect({...s.attrs});
+  else if(s.type==='circle') node=new Konva.Circle({...s.attrs});
+  else if(s.type==='text') node=new Konva.Text({...s.attrs});
+  else return null;
+  node.shapeType=s.type;
+  attachNodeEvents(node);
+  layer.add(node);
+  return node;
+}
+
+function clearCanvas(){
+  layer.getChildren(n=>n!==tr && n.shapeType).slice().forEach(n=>n.destroy());
+  select(null); history=[]; counters={rect:0,circle:0,text:0,image:0};
+}
+
+let _saveTimer=null, _saveDot=document.getElementById('saveDot'), _saveLabel=document.getElementById('saveLabel');
+function setSaveState(state){ // 'saving'|'saved'|''
+  _saveDot.className='save-dot '+(state||'');
+  _saveLabel.textContent = state==='saving'?'Сохранение…': state==='saved'?'Сохранено':'';
+}
+
+function saveProject(showThumb=true){
+  if(!currentProjectId) return;
+  setSaveState('saving');
+  const name = tabFn.value.trim()||'Без названия';
+
+  // generate thumbnail (hide transformer first)
+  tr.nodes([]); layer.batchDraw();
+  const thumbnail = showThumb? stage.toDataURL({pixelRatio:0.35}) : (getProjectData()?.thumbnail||'');
+  if(selected){ tr.nodes([selected]); layer.batchDraw(); }
+
+  const shapes = serializeCanvas();
+  const entry = {id:currentProjectId, name, updatedAt:Date.now(), thumbnail};
+  localStorage.setItem(STORE_PROJ(currentProjectId), JSON.stringify({...entry, shapes}));
+
+  // update index
+  const idx = getIndex().filter(x=>x.id!==currentProjectId);
+  idx.unshift({id:entry.id, name:entry.name, updatedAt:entry.updatedAt, thumbnail});
+  setIndex(idx);
+  setTimeout(()=>setSaveState('saved'), 300);
+  setTimeout(()=>setSaveState(''), 2200);
+}
+
+function getProjectData(){
+  try{ return JSON.parse(localStorage.getItem(STORE_PROJ(currentProjectId))||'null'); }catch{ return null; }
+}
+
+function scheduleSave(){
+  setSaveState('saving');
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(()=>saveProject(true), 900);
+}
+
+function loadProject(id){
+  clearCanvas();
+  let data; try{ data=JSON.parse(localStorage.getItem(STORE_PROJ(id))||'null'); }catch{ data=null; }
+  const name = data?.name || 'Без названия';
+  tabFn.value = name;
+  document.getElementById('sideFilename').textContent = name;
+
+  if(!data?.shapes?.length){ pushHistory(); refreshLayers(); setSaveState(''); return; }
+
+  const imgPromises = data.shapes.filter(s=>s.type==='image').map(s=>
+    new Promise(res=>{
+      const img=new Image();
+      img.onload=()=>{ makeImageSilent(img,s.attrs); res(); };
+      img.onerror=()=>res();
+      img.src=s.src||'';
+    })
+  );
+
+  data.shapes.forEach(s=>{ if(s.type!=='image') restoreNode(s); });
+  Promise.all(imgPromises).then(()=>{ tr.moveToTop(); layer.batchDraw(); refreshLayers(); pushHistory(); setSaveState(''); });
+}
+
+function makeImageSilent(imgEl, attrs){
+  counters.image++;
+  const node=new Konva.Image({...attrs, image:imgEl, draggable:true});
+  if(!node.name()) node.name('Image '+counters.image);
+  node.shapeType='image'; node._imgEl=imgEl;
+  attachNodeEvents(node);
+  layer.add(node);
+}
 
 function resizeStage(){stage.width(container.clientWidth); stage.height(container.clientHeight);}
 window.addEventListener('resize', resizeStage);
 
 /* ---- toolbar ---- */
-document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('.tool').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active'); tool=b.dataset.tool;
-  stage.container().style.cursor= tool==='select'?'default':'crosshair';
-});
+function setTool(t){
+  tool=t;
+  document.querySelectorAll('.dock-btn[data-tool]').forEach(x=>x.classList.remove('active'));
+  const btn=document.querySelector(`.dock-btn[data-tool="${t}"]`);
+  if(btn) btn.classList.add('active');
+  stage.container().style.cursor= t==='select'?'default':'crosshair';
+}
+document.querySelectorAll('.dock-btn[data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
 
 /* ---- shape factory ---- */
 function makeShape(type, x, y){
   let node;
   if(type==='rect'){
     counters.rect++;
-    node=new Konva.Rect({x, y, width:140, height:90, fill:'#0071e3', stroke:'#0058b3', strokeWidth:0, cornerRadius:6, name:'Rectangle '+counters.rect, draggable:true});
+    node=new Konva.Rect({x,y,width:140,height:90,fill:'#0071e3',strokeWidth:0,cornerRadius:6,name:'Rectangle '+counters.rect,draggable:true});
   } else if(type==='circle'){
     counters.circle++;
-    node=new Konva.Circle({x, y, radius:60, fill:'#7b5cff', stroke:'#5a3fd6', strokeWidth:0, name:'Circle '+counters.circle, draggable:true});
+    node=new Konva.Circle({x,y,radius:60,fill:'#7b5cff',strokeWidth:0,name:'Circle '+counters.circle,draggable:true});
   } else if(type==='text'){
     counters.text++;
-    node=new Konva.Text({x, y, text:'Текст', fontSize:24, fontFamily:'inherit', fill:'#1d1d1f', name:'Text '+counters.text, draggable:true});
+    node=new Konva.Text({x,y,text:'Текст',fontSize:24,fontFamily:'inherit',fill:'#ffffff',name:'Text '+counters.text,draggable:true});
   }
   node.shapeType=type;
-  node.on('click tap', e=>{e.cancelBubble=true; select(node);});
-  node.on('dragmove transform', ()=>{if(selected===node) syncProps();});
-  node.on('dblclick dbltap', ()=>{ if(type==='text'){ const t=prompt('Текст:', node.text()); if(t!==null){node.text(t); layer.batchDraw(); if(selected===node) syncProps();} }});
+  attachNodeEvents(node);
   layer.add(node);
   refreshLayers();
   pushHistory();
   return node;
 }
+
+/* ---- inline text editor ---- */
+function startTextEdit(node){
+  tr.nodes([]); layer.batchDraw();
+  const scale = stage.scaleX();
+  const abs = node.getAbsolutePosition();
+  const box = stage.container().getBoundingClientRect();
+  const ta = document.createElement('textarea');
+  ta.value = node.text();
+  Object.assign(ta.style,{
+    position:'fixed', zIndex:'999',
+    left: box.left + abs.x + 'px',
+    top:  box.top  + abs.y + 'px',
+    fontSize: (node.fontSize()*scale) + 'px',
+    fontFamily: 'inherit',
+    color: node.fill()||'#ffffff',
+    background: 'rgba(30,30,30,.92)',
+    border: '2px solid #0071e3',
+    borderRadius: '6px',
+    padding: '6px 10px',
+    outline: 'none',
+    resize: 'none',
+    minWidth: '120px',
+    lineHeight: '1.4',
+    whiteSpace: 'pre',
+  });
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  const finish=()=>{
+    const val=ta.value||'Текст';
+    node.text(val); ta.remove();
+    tr.nodes(selected===node?[node]:[]); layer.batchDraw();
+    if(selected===node) syncProps();
+    pushHistory();
+  };
+  ta.addEventListener('blur', finish);
+  ta.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){ ta.value=node.text(); ta.blur(); }
+    if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); ta.blur(); }
+  });
+}
+
+/* ---- image factory ---- */
+function makeImage(imgEl, x, y, w, h){
+  counters.image++;
+  const node=new Konva.Image({x,y,image:imgEl,width:w,height:h,name:'Image '+counters.image,draggable:true});
+  node.shapeType='image'; node._imgEl=imgEl;
+  attachNodeEvents(node);
+  layer.add(node); select(node); refreshLayers(); pushHistory();
+  return node;
+}
+
+/* ---- import image ---- */
+document.getElementById('importBtn').onclick=()=>document.getElementById('fileInput').click();
+document.getElementById('fileInput').onchange=e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const img=new Image();
+    img.onload=()=>{
+      let w=img.naturalWidth, h=img.naturalHeight;
+      const maxS=420; if(w>maxS||h>maxS){const r=Math.min(maxS/w,maxS/h); w*=r; h*=r;}
+      const cx=stage.width()/2, cy=stage.height()/2;
+      const rx=(cx-stage.x())/stage.scaleX(), ry=(cy-stage.y())/stage.scaleY();
+      makeImage(img, rx-w/2, ry-h/2, w, h);
+      setTool('select');
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+};
 
 /* ---- selection ---- */
 function select(node){
@@ -394,7 +714,7 @@ stage.on('mousedown touchstart', e=>{
     const real={x:(p.x-stage.x())/stage.scaleX(), y:(p.y-stage.y())/stage.scaleY()};
     const node=makeShape(tool, real.x, real.y);
     select(node);
-    document.querySelector('.tool[data-tool="select"]').click();
+    setTool('select');
   }
 });
 stage.on('mousemove touchmove', ()=>{
@@ -450,8 +770,8 @@ function refreshLayers(){
   shapes.slice().reverse().forEach(node=>{
     const el=document.createElement('div');
     el.className='layer-item'+(node===selected?' sel':'');
-    const color = node.shapeType==='text' ? '#1d1d1f' : (node.fill?node.fill():'#999');
-    el.innerHTML=`<span class="dot" style="background:${color}"></span><span>${node.name()}</span>`;
+    const icon = {text:'T', rect:'▭', circle:'◯', image:'🖼'}[node.shapeType]||'◈';
+    el.innerHTML=`<span class="lic">${icon}</span><span>${node.name()}</span>`;
     el.onclick=()=>select(node);
     list.appendChild(el);
   });
@@ -461,44 +781,94 @@ function refreshLayers(){
 function syncProps(){
   const panel=document.getElementById('propsPanel');
   if(!selected){
-    panel.innerHTML=`<div class="panel-h">Свойства</div><div class="empty-hint">Выберите объект, чтобы редактировать его параметры.</div>
-    <div class="hint">Space+Drag — панорама<br>Ctrl+Wheel — зум<br>Delete — удалить<br>Ctrl+C / Ctrl+V — копия<br>Ctrl+Z — отменить</div>`;
+    panel.innerHTML=`<div class="pp-empty">Выберите объект.</div>
+    <div class="pp-hint">Space+ЛКМ — панорама<br>Ctrl+колесо — зум<br>Delete — удалить<br>Ctrl+C/V — копия<br>Ctrl+Z — отменить<br>2×клик текст — редактировать</div>`;
     return;
   }
   const isCircle=selected.shapeType==='circle';
-  const w = isCircle? selected.radius()*2*selected.scaleX() : selected.width()*selected.scaleX();
-  const h = isCircle? selected.radius()*2*selected.scaleY() : selected.height()*selected.scaleY();
-  const fill = selected.fill? selected.fill():'#000000';
+  const isImg=selected.shapeType==='image';
+  const isText=selected.shapeType==='text';
+  const w = isCircle? Math.round(selected.radius()*2*selected.scaleX()) : Math.round(selected.width()*selected.scaleX());
+  const h = isCircle? Math.round(selected.radius()*2*selected.scaleY()) : Math.round(selected.height()*selected.scaleY());
+  const fill = selected.fill? selected.fill():'#e6e6e6';
   const stroke = selected.stroke? (selected.stroke()||'#000000'):'#000000';
+  const opacity = Math.round((selected.opacity??(1))*100);
+  const fs = isText? selected.fontSize():24;
+
   panel.innerHTML=`
-    <div class="panel-h">Свойства</div>
-    <div class="field"><label>Название</label><input id="pName" type="text" value="${selected.name()}"></div>
-    <div class="row2">
-      <div class="field"><label>X</label><input id="pX" type="number" value="${Math.round(selected.x())}"></div>
-      <div class="field"><label>Y</label><input id="pY" type="number" value="${Math.round(selected.y())}"></div>
+    <div class="pp-section">
+      <div class="pp-label">Объект</div>
+      <div class="pp-h">${selected.name()}</div>
     </div>
-    <div class="row2">
-      <div class="field"><label>W</label><input id="pW" type="number" value="${Math.round(w)}"></div>
-      <div class="field"><label>H</label><input id="pH" type="number" value="${Math.round(h)}"></div>
+    <div class="pp-section">
+      <div class="pp-label">Position</div>
+      <div class="pp-row">
+        <div class="pp-field"><span class="pl">X</span><input id="pX" type="number" value="${Math.round(selected.x())}"></div>
+        <div class="pp-field"><span class="pl">Y</span><input id="pY" type="number" value="${Math.round(selected.y())}"></div>
+      </div>
     </div>
-    <div class="field"><label>Fill</label><input id="pFill" type="color" value="${toHex(fill)}"></div>
-    ${selected.shapeType!=='text'?`<div class="field"><label>Stroke</label><input id="pStroke" type="color" value="${toHex(stroke)}"></div>`:''}
-    <div class="hint">Space+Drag — панорама<br>Ctrl+Wheel — зум<br>Delete — удалить<br>Ctrl+C / Ctrl+V — копия<br>Ctrl+Z — отменить</div>
+    <div class="pp-section">
+      <div class="pp-label">Layout</div>
+      <div class="pp-row">
+        <div class="pp-field"><span class="pl">W</span><input id="pW" type="number" value="${w}"></div>
+        <div class="pp-field"><span class="pl">H</span><input id="pH" type="number" value="${h}"></div>
+      </div>
+    </div>
+    <div class="pp-section">
+      <div class="pp-label">Appearance</div>
+      <div class="pp-row">
+        <div class="pp-field"><span class="pl">%</span><input id="pOpacity" type="number" min="0" max="100" value="${opacity}"></div>
+        ${isText?`<div class="pp-field"><span class="pl">fs</span><input id="pFs" type="number" min="6" max="400" value="${fs}"></div>`:'<div></div>'}
+      </div>
+    </div>
+    ${!isImg?`
+    <div class="pp-section">
+      <div class="pp-label">Fill</div>
+      <div class="pp-fillrow">
+        <input id="pFill" type="color" value="${toHex(fill)}">
+        <span>${toHex(fill).toUpperCase()}</span>
+      </div>
+    </div>`:''}
+    ${!isImg&&!isText?`
+    <div class="pp-section">
+      <div class="pp-label">Stroke</div>
+      <div class="pp-fillrow">
+        <input id="pStroke" type="color" value="${toHex(stroke)}">
+        <span id="pStrokeW" style="cursor:pointer">SW: ${selected.strokeWidth?selected.strokeWidth():0}px</span>
+      </div>
+    </div>`:''}
+    ${isText?`
+    <div class="pp-section">
+      <div class="pp-label">Text content</div>
+      <textarea class="pp-textarea" id="pText">${selected.text()}</textarea>
+    </div>`:''}
+    ${isImg?`
+    <div class="pp-section" style="color:#8a8a8a;font-size:11px;line-height:1.6">
+      🖼 Изображение<br>${w}×${h}px
+    </div>`:''}
   `;
-  document.getElementById('pName').oninput=e=>{selected.name(e.target.value); refreshLayers();};
-  document.getElementById('pX').oninput=e=>{selected.x(+e.target.value); layer.batchDraw();};
-  document.getElementById('pY').oninput=e=>{selected.y(+e.target.value); layer.batchDraw();};
-  document.getElementById('pW').oninput=e=>{
-    if(isCircle){ selected.radius(+e.target.value/2); } else { selected.width(+e.target.value); selected.scaleX(1); }
+
+  const bind=(id,fn)=>{const el=document.getElementById(id); if(el) el.addEventListener('input',fn);};
+  bind('pX', e=>{selected.x(+e.target.value); layer.batchDraw();});
+  bind('pY', e=>{selected.y(+e.target.value); layer.batchDraw();});
+  bind('pW', e=>{
+    if(isCircle) selected.radius(+e.target.value/2);
+    else { selected.width(+e.target.value); selected.scaleX(1); }
     layer.batchDraw();
-  };
-  document.getElementById('pH').oninput=e=>{
-    if(isCircle){ selected.radius(+e.target.value/2); } else { selected.height(+e.target.value); selected.scaleY(1); }
+  });
+  bind('pH', e=>{
+    if(isCircle) selected.radius(+e.target.value/2);
+    else { selected.height(+e.target.value); selected.scaleY(1); }
     layer.batchDraw();
-  };
-  document.getElementById('pFill').oninput=e=>{selected.fill(e.target.value); layer.batchDraw(); refreshLayers();};
-  const ps=document.getElementById('pStroke');
-  if(ps) ps.oninput=e=>{selected.stroke(e.target.value); selected.strokeWidth(2); layer.batchDraw();};
+  });
+  bind('pOpacity', e=>{selected.opacity(Math.max(0,Math.min(100,+e.target.value))/100); layer.batchDraw();});
+  bind('pFs', e=>{selected.fontSize(+e.target.value); layer.batchDraw();});
+  bind('pFill', e=>{
+    selected.fill(e.target.value); layer.batchDraw(); refreshLayers();
+    const sp=e.target.nextElementSibling; if(sp) sp.textContent=e.target.value.toUpperCase();
+  });
+  bind('pStroke', e=>{selected.stroke(e.target.value); selected.strokeWidth(Math.max(1,selected.strokeWidth()||1)); layer.batchDraw();});
+  bind('pText', e=>{selected.text(e.target.value); layer.batchDraw();});
 }
 function toHex(c){
   if(!c) return '#000000';
@@ -514,6 +884,7 @@ function pushHistory(){
   const json=layer.getChildren(n=>n!==tr && n.shapeType).map(n=>n.toObject());
   history.push(JSON.stringify(json));
   if(history.length>50) history.shift();
+  if(currentProjectId) scheduleSave();
 }
 function undo(){
   if(history.length<2) return;
@@ -523,20 +894,13 @@ function undo(){
   layer.getChildren(n=>n!==tr && n.shapeType).slice().forEach(n=>n.destroy());
   select(null);
   snap.forEach(obj=>{
-    let node;
-    if(obj.className==='Rect') node=new Konva.Rect(obj.attrs);
-    else if(obj.className==='Circle') node=new Konva.Circle(obj.attrs);
-    else node=new Konva.Text(obj.attrs);
-    node.shapeType = obj.className==='Rect'?'rect':obj.className==='Circle'?'circle':'text';
-    node.draggable(true);
-    node.on('click tap', e=>{e.cancelBubble=true; select(node);});
-    node.on('dragmove transform', ()=>{if(selected===node) syncProps();});
-    node.on('dblclick dbltap', ()=>{ if(node.shapeType==='text'){ const t=prompt('Текст:', node.text()); if(t!==null){node.text(t); layer.batchDraw(); if(selected===node) syncProps();} }});
-    layer.add(node);
+    const s={type: obj.className==='Rect'?'rect':obj.className==='Circle'?'circle':'text', attrs:obj.attrs};
+    restoreNode(s);
   });
   tr.moveToTop(); layer.batchDraw();
   refreshLayers();
   skip=false;
+  if(currentProjectId) scheduleSave();
 }
 pushHistory();
 
@@ -550,27 +914,39 @@ window.addEventListener('keydown', e=>{
     selected.destroy(); select(null); layer.batchDraw(); refreshLayers(); pushHistory();
   }
   if(e.ctrlKey && e.key==='c' && selected){
-    clipboard=selected.toObject();
+    if(selected.shapeType==='image'){
+      clipboard={shapeType:'image', _imgEl:selected._imgEl,
+        x:selected.x(), y:selected.y(), width:selected.width()*selected.scaleX(), height:selected.height()*selected.scaleY()};
+    } else {
+      clipboard=selected.toObject();
+    }
   }
   if(e.ctrlKey && e.key==='v' && clipboard){
     let node;
-    if(clipboard.className==='Rect') node=new Konva.Rect(clipboard.attrs);
-    else if(clipboard.className==='Circle') node=new Konva.Circle(clipboard.attrs);
-    else node=new Konva.Text(clipboard.attrs);
-    node.x(node.x()+24); node.y(node.y()+24);
-    node.shapeType = clipboard.className==='Rect'?'rect':clipboard.className==='Circle'?'circle':'text';
-    counters[node.shapeType]++; node.name(node.shapeType[0].toUpperCase()+node.shapeType.slice(1)+' '+counters[node.shapeType]);
-    node.draggable(true);
-    node.on('click tap', ev=>{ev.cancelBubble=true; select(node);});
-    node.on('dragmove transform', ()=>{if(selected===node) syncProps();});
-    node.on('dblclick dbltap', ()=>{ if(node.shapeType==='text'){ const t=prompt('Текст:', node.text()); if(t!==null){node.text(t); layer.batchDraw(); if(selected===node) syncProps();} }});
+    if(clipboard.shapeType==='image' && clipboard._imgEl){
+      counters.image++;
+      node=new Konva.Image({x:clipboard.x+24,y:clipboard.y+24,image:clipboard._imgEl,width:clipboard.width,height:clipboard.height,name:'Image '+counters.image,draggable:true});
+      node.shapeType='image'; node._imgEl=clipboard._imgEl;
+    } else {
+      const cls=clipboard.className;
+      if(cls==='Rect') node=new Konva.Rect(clipboard.attrs);
+      else if(cls==='Circle') node=new Konva.Circle(clipboard.attrs);
+      else node=new Konva.Text(clipboard.attrs);
+      node.x((clipboard.attrs.x||0)+24); node.y((clipboard.attrs.y||0)+24);
+      node.shapeType=cls==='Rect'?'rect':cls==='Circle'?'circle':'text';
+      counters[node.shapeType]++;
+      node.name(node.shapeType[0].toUpperCase()+node.shapeType.slice(1)+' '+counters[node.shapeType]);
+    }
+    attachNodeEvents(node);
     layer.add(node); select(node); refreshLayers(); pushHistory();
   }
+  if(e.ctrlKey && e.key==='s'){ e.preventDefault(); saveProject(true); }
   if(e.ctrlKey && e.key==='z'){ e.preventDefault(); undo(); }
-  if(e.key==='v') document.querySelector('.tool[data-tool="select"]').click();
-  if(e.key==='r') document.querySelector('.tool[data-tool="rect"]').click();
-  if(e.key==='o') document.querySelector('.tool[data-tool="circle"]').click();
-  if(e.key==='t') document.querySelector('.tool[data-tool="text"]').click();
+  if(e.key==='v'&&!e.ctrlKey) setTool('select');
+  if(e.key==='r'&&!e.ctrlKey) setTool('rect');
+  if(e.key==='o'&&!e.ctrlKey) setTool('circle');
+  if(e.key==='t'&&!e.ctrlKey) setTool('text');
+  if(e.key==='i'&&!e.ctrlKey) document.getElementById('fileInput').click();
 });
 
 /* push history after drag/transform end */
