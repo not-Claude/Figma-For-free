@@ -797,7 +797,7 @@ function refreshLayers(){
   shapes.slice().reverse().forEach(node=>{
     const el=document.createElement('div');
     el.className='layer-item'+(node===selected?' sel':'');
-    const icon = {text:'T', rect:'⬛', circle:'⚫', image:'🖨️'}[node.shapeType]||'◈';
+    const icon = {text:'T', rect:'▭', circle:'◯', image:'🖼'}[node.shapeType]||'◈';
     el.innerHTML=`<span class="lic">${icon}</span><span>${node.name()}</span>`;
     el.onclick=()=>select(node);
     list.appendChild(el);
@@ -905,168 +905,81 @@ function syncProps(){
 }
 
 /* ============ BACKGROUND REMOVAL ============ */
+const BGREM_CDN = 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.7/dist/browser/';
+let _bgRemFn = null;
 
-import { removeBackground } from '@imgly/background-removal';
+async function doRemoveBg(node){
+  if(!node || node.shapeType!=='image') return;
 
-async function doRemoveBg(node) {
-  if (!node || node.shapeType !== 'image') return;
-
-  const overlay = document.getElementById('bgremOverlay');
-  const label = document.getElementById('bgremLabel');
-  const sub = document.getElementById('bgremSub');
-  const fill = document.getElementById('bgremFill');
-
-  if (!overlay || !label || !sub || !fill) {
-    console.error('Background removal UI elements not found');
-    return;
-  }
+  const overlay  = document.getElementById('bgremOverlay');
+  const label    = document.getElementById('bgremLabel');
+  const sub      = document.getElementById('bgremSub');
+  const fill     = document.getElementById('bgremFill');
 
   overlay.classList.add('show');
   label.textContent = 'Загрузка модели…';
-  sub.textContent = 'Первый запуск может занять некоторое время.';
-  fill.style.width = '0%';
+  sub.textContent   = 'Первый запуск: ~15 сек. Модель кешируется.';
+  fill.style.width  = '0%';
 
   try {
-    /* Создаём canvas из исходного изображения */
-    const img = node._imgEl;
-
-    if (!img) {
-      throw new Error('Исходное изображение не найдено');
+    /* load library once */
+    if(!_bgRemFn){
+      const mod = await import(BGREM_CDN + 'index.js');
+      _bgRemFn = mod.removeBackground;
     }
-
-    const width = img.naturalWidth || img.width;
-    const height = img.naturalHeight || img.height;
-
-    if (!width || !height) {
-      throw new Error('Не удалось определить размер изображения');
-    }
-
-    const tmp = document.createElement('canvas');
-    tmp.width = width;
-    tmp.height = height;
-
-    const ctx = tmp.getContext('2d');
-
-    if (!ctx) {
-      throw new Error('Не удалось создать Canvas 2D context');
-    }
-
-    ctx.drawImage(img, 0, 0, width, height);
-
-    /* Canvas → PNG Blob */
-    const inputBlob = await new Promise((resolve, reject) => {
-      tmp.toBlob(
-        blob => {
-          if (blob) {
-            resolve(blob);
-          } else {
-            reject(new Error('Не удалось создать PNG'));
-          }
-        },
-        'image/png'
-      );
-    });
 
     label.textContent = 'Удаление фона…';
-    sub.textContent = 'Обработка изображения…';
+    sub.textContent   = '';
 
-    /* Удаление фона */
-    const resultBlob = await removeBackground(inputBlob, {
-      progress: (key, current, total) => {
-        if (total > 0) {
-          const pct = Math.min(
-            100,
-            Math.round((current / total) * 100)
-          );
+    /* rasterize the Konva.Image to a fresh canvas blob */
+    const tmp = document.createElement('canvas');
+    tmp.width  = node._imgEl.naturalWidth  || node.width();
+    tmp.height = node._imgEl.naturalHeight || node.height();
+    tmp.getContext('2d').drawImage(node._imgEl, 0, 0);
+    const inputBlob = await new Promise(res => tmp.toBlob(res, 'image/png'));
 
+    const config = {
+      publicPath: BGREM_CDN,
+      progress: (key, cur, total) => {
+        if(total > 0){
+          const pct = Math.round(cur / total * 100);
           fill.style.width = pct + '%';
-
-          if (String(key).includes('fetch')) {
-            label.textContent = 'Загрузка модели…';
-          } else {
-            label.textContent = `Обработка… ${pct}%`;
-          }
+          if(key.includes('fetch')) label.textContent = 'Загрузка модели…';
+          else label.textContent = 'Обработка… ' + pct + '%';
         }
       }
+    };
+
+    const resultBlob = await _bgRemFn(inputBlob, config);
+
+    /* convert blob → data URL so save/restore works */
+    const dataUrl = await new Promise(res => {
+      const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(resultBlob);
     });
 
-    /* Blob → Data URL */
-    const dataUrl = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () =>
-        reject(new Error('Не удалось прочитать результат'));
-
-      reader.readAsDataURL(resultBlob);
-    });
-
-    /* Создаём новое изображение */
     const newImg = new Image();
-
     newImg.onload = () => {
       node.image(newImg);
       node._imgEl = newImg;
-
       layer.batchDraw();
-
       syncProps();
       pushHistory();
-
-      fill.style.width = '100%';
-      label.textContent = 'Готово!';
-
-      setTimeout(() => {
-        overlay.classList.remove('show');
-      }, 300);
+      overlay.classList.remove('show');
     };
-
-    newImg.onerror = () => {
-      throw new Error('Не удалось загрузить обработанное изображение');
-    };
-
     newImg.src = dataUrl;
 
-  } catch (err) {
+  } catch(err) {
     console.error('BG removal error:', err);
-
     label.textContent = '❌ Ошибка';
-    sub.textContent =
-      err?.message || 'Проверьте соединение и попробуйте снова';
-
-    fill.style.width = '0%';
-
-    setTimeout(() => {
-      overlay.classList.remove('show');
-    }, 2500);
+    sub.textContent   = err.message || 'Проверьте соединение';
+    setTimeout(() => overlay.classList.remove('show'), 2500);
   }
 }
-
-
-/* ============ COLOR → HEX ============ */
-
-function toHex(c) {
-  if (!c) return '#000000';
-
-  if (c[0] === '#') {
-    return c.length === 7 ? c : '#000000';
-  }
-
-  const m = c.match(/\d+/g);
-
-  if (!m) return '#000000';
-
-  return (
-    '#' +
-    m
-      .slice(0, 3)
-      .map(n =>
-        Number(n)
-          .toString(16)
-          .padStart(2, '0')
-      )
-      .join('')
-  );
+function toHex(c){
+  if(!c) return '#000000';
+  if(c[0]==='#') return c.length===7?c:'#000000';
+  const m=c.match(/\d+/g); if(!m) return '#000000';
+  return '#'+m.slice(0,3).map(n=>(+n).toString(16).padStart(2,'0')).join('');
 }
 
 /* ---- history (undo) ---- */
